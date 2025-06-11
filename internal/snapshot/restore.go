@@ -145,7 +145,9 @@ func (s *AWSSnapshotter) RestoreSnapshot(ctx context.Context, mountPoint string)
 	// 4. Wait for volume to be 'available'
 	s.logger.Info().Msgf("RestoreSnapshot: Waiting for volume %s to become available...", *newVolume.VolumeId)
 	volumeAvailableWaiter := ec2.NewVolumeAvailableWaiter(s.ec2Client, defaultVolumeAvailableWaiterOptions)
-	if err := volumeAvailableWaiter.Wait(ctx, &ec2.DescribeVolumesInput{VolumeIds: []string{*newVolume.VolumeId}}, defaultVolumeAvailableMaxWaitTime); err != nil {
+	if err := volumeAvailableWaiter.Wait(ctx, &ec2.DescribeVolumesInput{VolumeIds: []string{*newVolume.VolumeId}}, defaultVolumeAvailableMaxWaitTime, func(options *ec2.VolumeAvailableWaiterOptions) {
+		options.MinDelay = time.Second
+	}); err != nil {
 		return nil, fmt.Errorf("volume %s did not become available in time: %w", *newVolume.VolumeId, err)
 	}
 	s.logger.Info().Msgf("RestoreSnapshot: Volume %s is available.", *newVolume.VolumeId)
@@ -172,7 +174,9 @@ func (s *AWSSnapshotter) RestoreSnapshot(ctx context.Context, mountPoint string)
 				Values: []string{"attached"},
 			},
 		},
-	}, defaultVolumeInUseMaxWaitTime)
+	}, defaultVolumeInUseMaxWaitTime, func(options *ec2.VolumeInUseWaiterOptions) {
+		options.MinDelay = time.Second
+	})
 	if err != nil {
 		return nil, fmt.Errorf("volume %s did not attach successfully and current state unknown: %w", *newVolume.VolumeId, err)
 	}
