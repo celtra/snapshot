@@ -26,6 +26,7 @@ const (
 	snapshotTagKeyBranch     = "runs-on-snapshot-branch"
 	snapshotTagKeyRepository = "runs-on-snapshot-repository"
 	snapshotTagKeyVersion    = "runs-on-snapshot-version"
+	snapshotTagKeyScope      = "runs-on-snapshot-scope"
 	nameTagKey               = "Name"
 	timestampTagKey          = "runs-on-timestamp"
 	ttlTagKey                = "runs-on-delete-after"
@@ -157,6 +158,7 @@ func (s *AWSSnapshotter) defaultTags() []types.Tag {
 	tags := []types.Tag{
 		{Key: aws.String(snapshotTagKeyVersion), Value: aws.String(s.config.Version)},
 		{Key: aws.String(snapshotTagKeyRepository), Value: aws.String(s.config.GithubRepository)},
+		{Key: aws.String(snapshotTagKeyScope), Value: aws.String(s.config.Scope)},
 		{Key: aws.String(snapshotTagKeyBranch), Value: aws.String(s.getSnapshotTagValue())},
 		{Key: aws.String(snapshotTagKeyArch), Value: aws.String(s.arch())},
 		{Key: aws.String(snapshotTagKeyPlatform), Value: aws.String(s.platform())},
