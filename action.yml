@@ -11,6 +11,10 @@ inputs:
   path:
     description: 'Path to the directory to snapshot. Must be an absolute path.'
     required: true
+  scope:
+    description: 'Scope'
+    required: false
+    default: 'default'
   version:
     description: 'Version of the snapshot to use'
     required: false

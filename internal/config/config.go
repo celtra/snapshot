@@ -29,6 +29,7 @@ type Config struct {
 	InstanceID               string
 	Az                       string
 	DefaultBranch            string
+	Scope                    string
 	CustomTags               []Tag
 	SnapshotName             string
 	RunnerConfig             *RunnerConfig
@@ -81,11 +82,7 @@ func NewConfigFromInputs(action *githubactions.Action) *Config {
 		action.Fatalf("Required tag '%s' is not present in the RunsOn config file.", requiredTagKey)
 	}
 
-	path := action.GetInput("path")
-	path = strings.TrimSpace(path)
-	if path == "" {
-		action.Fatalf("Path is required.")
-	}
+	path := requiredInput(action, "path")
 	if !strings.HasPrefix(path, "/") {
 		action.Fatalf("Path '%s' must be an absolute path.", path)
 	}
@@ -108,12 +105,25 @@ func NewConfigFromInputs(action *githubactions.Action) *Config {
 	cfg.VolumeIops = parseInt(action, "volume_iops", 100, 0)
 	cfg.VolumeThroughput = parseInt(action, "volume_throughput", 100, 0)
 	cfg.VolumeSize = parseInt(action, "volume_size", 1, 0)
+	cfg.Scope = requiredInput(action, "scope")
 
 	action.Infof("Input 'path': %v", cfg.Path)
 	action.Infof("Input 'version': %s", cfg.Version)
 	action.Infof("Input 'wait_for_completion': %t", cfg.WaitForCompletion)
+	action.Infof("Input 'scope': %s", cfg.Scope)
 
 	return cfg
+}
+
+func requiredInput(action *githubactions.Action, input string) string {
+	value := action.GetInput(input)
+	value = strings.TrimSpace(value)
+
+	if value == "" {
+		action.Fatalf("%s' cannot be empty", input)
+	}
+
+	return value
 }
 
 func parseInt(action *githubactions.Action, input string, min int, max int) int32 {
