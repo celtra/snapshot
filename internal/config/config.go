@@ -110,7 +110,7 @@ func NewConfigFromInputs(action *githubactions.Action) *Config {
 	action.Infof("Input 'path': %v", cfg.Path)
 	action.Infof("Input 'version': %s", cfg.Version)
 	action.Infof("Input 'wait_for_completion': %t", cfg.WaitForCompletion)
-	action.Infof("Input 'scope': %t", cfg.Scope)
+	action.Infof("Input 'scope': %s", cfg.Scope)
 
 	return cfg
 }
