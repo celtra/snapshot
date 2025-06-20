@@ -1,3 +1,11 @@
+# celtra/snapshot
+
+Custom version with the following patches:
+
+- https://github.com/runs-on/snapshot/pull/2
+- https://github.com/runs-on/snapshot/pull/3
+- https://github.com/runs-on/snapshot/pull/4
+
 # runs-on/snapshot
 
 GitHub Action to snapshot and restore entire folders on self-hosted runners.
